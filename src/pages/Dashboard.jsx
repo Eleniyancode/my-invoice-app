@@ -3,12 +3,16 @@ import Select from "../components/ui/Select";
 import Sidebar from "../components/layout/Sidebar";
 import InvoiceList from "../components/ui/InvoiceList";
 import { useAppContext } from "../context/useAppContext";
-import { useNavigate } from "react-router-dom";
 import Main from "../components/layout/Main";
+import Modal from "../components/ui/modal";
+import CreateInvoiceForm from "../components/ui/CreateInvoiceForm";
+import { useState } from "react";
 
 function Dashboard() {
-  const { invoices } = useAppContext();
-  const navigate = useNavigate();
+  const { invoices, createInvoice, setInvoices } = useAppContext();
+  // const navigate = useNavigate();
+
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   return (
     <>
       <div className="bg-gray-light flex">
@@ -32,7 +36,7 @@ function Dashboard() {
                 ]}
               />
 
-              <Button onClick={() => navigate("/new")}>
+              <Button onClick={() => setIsCreateOpen(true)}>
                 <div className="flex justify-center items-center gap-2">
                   <p className="p-4 bg-white size-5 rounded-full text-black flex justify-center items-center font-sans font-bold text-2xl">
                     +
@@ -45,6 +49,18 @@ function Dashboard() {
 
           <InvoiceList invoices={invoices} />
         </Main>
+
+        {/* EDIT MODAL */}
+        {isCreateOpen && (
+          <Modal onClose={() => setIsCreateOpen(false)}>
+            <CreateInvoiceForm
+              invoices={invoices}
+              setInvoices={setInvoices}
+              setIsCreateOpen={setIsCreateOpen}
+              createInvoice={createInvoice}
+            />
+          </Modal>
+        )}
       </div>
     </>
   );

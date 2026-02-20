@@ -19,7 +19,7 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   const createInvoice = (newInvoice) => {
-    setInvoices((prev) => [...prev, { ...newInvoice, id: Date.now() }]);
+    setInvoices((prev) => [...prev, { ...newInvoice, id: String(Date.now()) }]);
   };
 
   // ✏️ UPDATE

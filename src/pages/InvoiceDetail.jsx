@@ -15,6 +15,7 @@ import DeleteInvoiceForm from "../components/ui/DeleteInvoiceForm";
 function InvoiceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  console.log(typeof id);
 
   const { invoices, setInvoices, deleteInvoice, updateInvoice } =
     useAppContext();
@@ -169,7 +170,7 @@ function InvoiceDetail() {
         <Modal onClose={() => setEditingInvoice(null)}>
           <EditInvoiceForm
             invoice={editingInvoice}
-            onClose={() => setEditingInvoice(null)}
+            setEditingInvoice={setEditingInvoice}
             updateInvoice={updateInvoice}
           />
         </Modal>

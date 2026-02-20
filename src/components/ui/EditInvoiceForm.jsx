@@ -6,7 +6,7 @@ import Button from "./Button";
 import { TrashIcon } from "@heroicons/react/16/solid";
 import { formatCurrency } from "../../utils/formatCurrency";
 
-function EditInvoiceForm({ invoice, updateInvoice, onClose }) {
+function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
   const [streetAddress, setStreetAddress] = useState(
     invoice.senderAddress.street,
   );
@@ -32,17 +32,21 @@ function EditInvoiceForm({ invoice, updateInvoice, onClose }) {
   );
   const [items, setItems] = useState(invoice.items);
   const [total, setTotal] = useState(invoice.total);
-  const [itemName, setItemName] = useState("");
-  const [itemQuantity, setItemQuantity] = useState("");
-  const [itemPrice, setItemPrice] = useState("");
-  // const [itemTotal, setItemTotal] = useState("");
+
+  const handleItemChange = (index, field, value) => {
+    setItems((prevItems) =>
+      prevItems.map((item, i) =>
+        i === index ? { ...item, [field]: value } : item,
+      ),
+    );
+  };
 
   const updatedItems = items.map((item) => ({
     ...item,
-    name: itemName,
-    quantity: itemQuantity,
-    price: itemPrice,
-    total: itemQuantity * itemPrice,
+    name: item.name,
+    quantity: item.quantity,
+    price: item.price,
+    total: item.price * item.quantity,
   }));
 
   function handleDeleteItem(e, id) {
@@ -56,6 +60,16 @@ function EditInvoiceForm({ invoice, updateInvoice, onClose }) {
 
     setItems((prev) => [...prev, { name: "", quantity: 0, price: 0 }]);
   }
+
+  const getItemsTotal = () => {
+    const itemsTotal = updatedItems
+      .map((item) => item.price * item.quantity)
+      .reduce((a, c) => a + c, 0);
+    console.log(total);
+    setTotal(itemsTotal);
+
+    return itemsTotal;
+  };
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -81,11 +95,16 @@ function EditInvoiceForm({ invoice, updateInvoice, onClose }) {
         country: clientCountry,
       },
       items: updatedItems,
-      total: total,
+      total: getItemsTotal(),
     };
 
     updateInvoice(invoice.id, updatedData);
-    onClose();
+    setEditingInvoice(null);
+  }
+
+  function handleCancelEditing(e) {
+    e.preventDefault();
+    setEditingInvoice(null);
   }
   return (
     <div className="flex ">
@@ -203,7 +222,7 @@ function EditInvoiceForm({ invoice, updateInvoice, onClose }) {
               />
             </div>
 
-            <div>
+            <div className="my-4">
               <Input
                 name="productDescription"
                 id="productDescription"
@@ -228,9 +247,10 @@ function EditInvoiceForm({ invoice, updateInvoice, onClose }) {
                       name="name"
                       id="name"
                       label=""
-                      placeholder={item.name}
-                      value={itemName}
-                      onChange={(e) => setItemName(e.target.value)}
+                      value={item.name}
+                      onChange={(e) =>
+                        handleItemChange(i, "name", e.target.value)
+                      }
                     />
                   </div>
 
@@ -239,9 +259,10 @@ function EditInvoiceForm({ invoice, updateInvoice, onClose }) {
                       name="quantity"
                       id="quantity"
                       label=""
-                      placeholder={item.quantity}
-                      value={itemQuantity}
-                      onChange={(e) => setItemQuantity(e.target.value)}
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleItemChange(i, "quantity", e.target.value)
+                      }
                     />
                   </div>
 
@@ -250,9 +271,10 @@ function EditInvoiceForm({ invoice, updateInvoice, onClose }) {
                       name="price"
                       id="price"
                       label=""
-                      placeholder={formatCurrency(item.price)}
-                      value={itemPrice}
-                      onChange={(e) => setItemPrice(e.target.value)}
+                      value={item.price}
+                      onChange={(e) =>
+                        handleItemChange(i, "price", e.target.value)
+                      }
                     />
                   </div>
 
@@ -280,7 +302,9 @@ function EditInvoiceForm({ invoice, updateInvoice, onClose }) {
           </div>
 
           <div className="flex justify-end gap-4">
-            <Button variant="gray">Cancel</Button>
+            <Button variant="gray" onClick={(e) => handleCancelEditing(e)}>
+              Cancel
+            </Button>
             <Button onClick={(e) => handleSubmit(e)} variant="primary">
               Save Changes
             </Button>
