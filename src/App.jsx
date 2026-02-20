@@ -1,8 +1,17 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import InvoiceDetail from "./pages/InvoiceDetail";
+import NewInvoice from "./pages/NewInvoice";
+
 function App() {
   return (
-    <>
-      <h1 className="bg-primary">Hello World!</h1>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/invoice/:id" element={<InvoiceDetail />} />
+        <Route path="/new" element={<NewInvoice />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
