@@ -1,51 +1,69 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AppContext } from "./AppContext";
-import { generateInvoiceId } from "../utils/generateId";
+import { getUserInvoices } from "../auth/services/invoiceServices/getUserInvoices";
+import { addInvoice } from "../auth/services/invoiceServices/addInvoice";
+import { deleteInvoice } from "../auth/services/invoiceServices/deleteInvoice";
+import { updateInvoice } from "../auth/services/invoiceServices/updateInvoice";
+
+import { useAuth } from "./useAuthContext";
 
 export const AppProvider = ({ children }) => {
-  const [invoices, setInvoices] = useState(() => {
-    const stored = localStorage.getItem("data");
-    return stored ? JSON.parse(stored) : [];
-  });
+  const { user } = useAuth();
+  const [invoices, setInvoices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   fetch("../data.json")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setInvoices(data);
+  //       // console.log(data);
+  //       localStorage.setItem("data", JSON.stringify(data));
+  //     })
+  //     .catch((err) => console.error(err));
+  // }, []);
+
+  const loadInvoices = async () => {
+    if (!user) return;
+
+    setLoading(true);
+    const data = await getUserInvoices();
+    setInvoices(data);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    fetch("../data.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setInvoices(data);
-        // console.log(data);
-        localStorage.setItem("data", JSON.stringify(data));
-      })
-      .catch((err) => console.error(err));
-  }, []);
+    if (user) {
+      loadInvoices();
+    }
+  }, [user]);
 
-  const createInvoice = (newInvoice) => {
-    setInvoices((prev) => [
-      ...prev,
-      { ...newInvoice, id: generateInvoiceId() },
-    ]);
+  const createInvoice = async (newInvoice) => {
+    await addInvoice(newInvoice);
+    await loadInvoices();
   };
 
   // ✏️ UPDATE
-  const updateInvoice = (id, updatedData) => {
-    setInvoices((prev) =>
-      prev.map((inv) => (inv.id === id ? { ...inv, ...updatedData } : inv)),
-    );
+  const handleUpdateInvoice = async (id, updatedData) => {
+    await updateInvoice(id, updatedData);
+    await loadInvoices();
   };
 
   // 🗑 DELETE
-  const deleteInvoice = (id) => {
-    setInvoices((prev) => prev.filter((inv) => inv.id !== id));
+  const handleDeleteInvoice = async (id) => {
+    await deleteInvoice(id);
+    await loadInvoices();
   };
 
   return (
     <AppContext.Provider
       value={{
+        loading,
         invoices,
         setInvoices,
         createInvoice,
-        updateInvoice,
-        deleteInvoice,
+        updateInvoice: handleUpdateInvoice,
+        deleteInvoice: handleDeleteInvoice,
       }}
     >
       {children}

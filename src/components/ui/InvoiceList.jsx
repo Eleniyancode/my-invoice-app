@@ -26,14 +26,14 @@ function InvoiceList({ invoices }) {
         <ul className="flex flex-col gap-4">
           {invoices.map((inv) => (
             <li
-              key={inv.id}
+              key={inv.invoiceId}
               className="flex gap-5 md:p-5 bg-white dark:bg-tertiary-dark transition duration-300 justify-center items-center rounded-lg"
             >
               <div className="flex flex-col md:flex-row text-gray-dark font-sans md:flex-1 p-5 md:gap-20 gap-3 md:justify-around">
                 <p className="font-bold text-gray-dark">
                   #
                   <span className="text-tertiary-dark dark:text-gray-dark transition duration-300">
-                    {inv.id}
+                    {inv.invoiceId}
                   </span>
                 </p>
                 <p>{formatDate(inv.createdAt)}</p>

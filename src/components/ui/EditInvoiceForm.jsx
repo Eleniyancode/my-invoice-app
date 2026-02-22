@@ -74,7 +74,7 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
     return itemsTotal;
   };
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const updatedData = {
       id: invoice.id,
@@ -101,9 +101,9 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
       total: getItemsTotal(),
     };
 
-    updateInvoice(invoice.id, updatedData);
+    await updateInvoice(invoice.id, updatedData);
     setEditingInvoice(null);
-  }
+  };
 
   function handleCancelEditing(e) {
     e.preventDefault();

@@ -9,9 +9,9 @@ import CreateInvoiceForm from "../components/ui/CreateInvoiceForm";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeftIcon } from "@heroicons/react/16/solid";
-
+import { logout } from "../auth/services/auth";
 function Dashboard() {
-  const { invoices, createInvoice, setInvoices } = useAppContext();
+  const { invoices, createInvoice, setInvoices, loading } = useAppContext();
   const [filterBy, setFilterBy] = useState("all");
   const navigate = useNavigate();
 
@@ -21,6 +21,14 @@ function Dashboard() {
       : invoices.filter((invoice) => invoice.status === filterBy);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
+  if (loading) return <p>Loading...</p>;
+
   return (
     <>
       <div className="bg-gray-light dark:bg-tertiary-light transition duration-300 flex flex-col md:flex-row md:min-h-screen">

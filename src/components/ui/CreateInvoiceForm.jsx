@@ -156,7 +156,7 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -167,7 +167,12 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
       total: grandTotal,
     };
 
-    createInvoice(newInvoice);
+    try {
+      await createInvoice(newInvoice);
+      navigate("/dashboard"); // go back after saving
+    } catch (error) {
+      console.error("Error saving invoice:", error);
+    }
     setIsCreateOpen(false);
   };
 
