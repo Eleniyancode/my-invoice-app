@@ -31,7 +31,7 @@ const Modal = ({ children, onClose }) => {
       ></div>
 
       {/* 🔥 Modal Content */}
-      <div className="relative z-10 w-full max-w-[50%] bg-white rounded-r-3xl shadow-xl animate-in fade-in zoom-in duration-200">
+      <div className="relative z-10 w-full md:max-w-[50%] bg-white dark:bg-tertiary-light md:rounded-r-3xl shadow-xl animate-in fade-in zoom-in duration-200">
         {children}
       </div>
     </div>

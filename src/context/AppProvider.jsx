@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AppContext } from "./AppContext";
+import { generateInvoiceId } from "../utils/generateId";
 
 export const AppProvider = ({ children }) => {
   const [invoices, setInvoices] = useState(() => {
@@ -19,7 +20,10 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   const createInvoice = (newInvoice) => {
-    setInvoices((prev) => [...prev, { ...newInvoice, id: String(Date.now()) }]);
+    setInvoices((prev) => [
+      ...prev,
+      { ...newInvoice, id: generateInvoiceId() },
+    ]);
   };
 
   // ✏️ UPDATE

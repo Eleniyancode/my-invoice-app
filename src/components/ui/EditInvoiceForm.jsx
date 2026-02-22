@@ -3,8 +3,9 @@ import Sidebar from "../layout/Sidebar";
 import DatePicker from "./DatePicker";
 import Input from "./Input";
 import Button from "./Button";
-import { TrashIcon } from "@heroicons/react/16/solid";
+import { ChevronLeftIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { useNavigate } from "react-router-dom";
 
 function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
   const [streetAddress, setStreetAddress] = useState(
@@ -32,6 +33,8 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
   );
   const [items, setItems] = useState(invoice.items);
   const [total, setTotal] = useState(invoice.total);
+
+  const navigate = useNavigate();
 
   const handleItemChange = (index, field, value) => {
     setItems((prevItems) =>
@@ -107,8 +110,20 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
     setEditingInvoice(null);
   }
   return (
-    <div className="flex ">
-      <Sidebar />
+    <div className="flex flex-col h-screen md:flex-row  ">
+      <div className=" ">
+        <Sidebar />
+
+        <button
+          onClick={() => {
+            navigate(-1);
+          }}
+          className="flex md:hidden items-center justify-center mt-3 p-2 font-bold gap-2 hover:text-primary-dark transition-all duration-200 cursor-pointer"
+        >
+          <ChevronLeftIcon className="block size-6 text-primary-dark" />
+          <span className="block text-primary-dark">Go Back</span>
+        </button>
+      </div>
       <div className="flex-10 p-8 h-screen overflow-y-scroll">
         <form>
           <h2>Edit #{invoice.id}</h2>

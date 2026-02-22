@@ -3,93 +3,173 @@ import Sidebar from "../layout/Sidebar";
 import DatePicker from "./DatePicker";
 import Input from "./Input";
 import Button from "./Button";
-import { TrashIcon } from "@heroicons/react/16/solid";
+import { ChevronLeftIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { formatDate } from "../../utils/formatDate";
+import { useNavigate } from "react-router-dom";
 
 function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
-  const [streetAddress, setStreetAddress] = useState("14 Bodija Avenue");
-  const [city, setCity] = useState("Ibadan");
-  const [postCode, setPostCode] = useState("NR24 5WQ");
-  const [country, setCountry] = useState("Nigeria");
-  const [clientName, setClientName] = useState("");
-  const [clientStreetAddress, setClientStreetAddress] = useState("");
-  const [clientCity, setClientCity] = useState("");
-  const [clientEmail, setClientEmail] = useState("");
-  const [clientPostCode, setClientPostCode] = useState("");
-  const [clientCountry, setClientCountry] = useState("");
-  const [invoiceDate, setInvoiceDate] = useState(new Date());
-  const [paymentTerm, setPaymentTerm] = useState("");
-  const [productDescription, setProductDescription] = useState("");
-  const [items, setItems] = useState([{ name: "", quantity: 1, price: 0 }]);
-  const [total, setTotal] = useState(0);
-  const [saveAsDraft, setSaveAsDraft] = useState(true);
+  const [formData, setFormData] = useState({
+    senderAddress: {
+      street: "14 Bodija Avenue",
+      city: "Ibadan",
+      postCode: "NR24 5WQ",
+      country: "Nigeria",
+    },
+    clientName: "",
+    clientEmail: "",
+    clientAddress: {
+      street: "",
+      city: "",
+      postCode: "",
+      country: "",
+    },
+    invoiceDate: formatDate(new Date()),
+    paymentTerms: "",
+    productDescription: "",
+    items: [{ id: crypto.randomUUID(), name: "", quantity: 0, price: 0 }],
+  });
 
-  const handleItemChange = (index, field, value) => {
-    setItems((prevItems) =>
-      prevItems.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item,
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleAddressChange = (section, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleItemChange = (itemId, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      items: prev.items.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              [field]: value,
+              // field === "quantity" || field === "price"
+              //   ? Number(value)
+              //   : value,
+            }
+          : item,
       ),
-    );
+    }));
   };
 
-  const updatedItems = items.map((item) => ({
-    ...item,
-    name: item.name,
-    quantity: item.quantity,
-    price: item.price,
-    total: item.price * item.quantity,
-  }));
-
-  function handleDeleteItem(e, id) {
-    e.preventDefault();
-    if (items.length <= 1) return;
-    setItems((prev) => prev.filter((inv, i) => i !== id));
-  }
-
-  function handleAddNewItem(e) {
+  const handleDeleteItem = (e, index) => {
     e.preventDefault();
 
-    setItems((prev) => [...prev, { name: "", quantity: 0, price: 0 }]);
-  }
-
-  const getItemsTotal = () => {
-    const itemsTotal = updatedItems
-      .map((item) => item.price * item.quantity)
-      .reduce((a, c) => a + c, 0);
-    console.log(total);
-    setTotal(itemsTotal);
-
-    return itemsTotal;
+    setFormData((prev) => ({
+      ...prev,
+      items: prev.items.filter((_, i) => i !== index),
+    }));
   };
 
-  function handleSubmit(e) {
+  const handleAddNewItem = (e) => {
     e.preventDefault();
+
+    setFormData((prev) => ({
+      ...prev,
+      items: [
+        ...prev.items,
+        { id: crypto.randomUUID(), name: "", quantity: 0, price: 0 },
+      ],
+    }));
+  };
+
+  const grandTotal = formData.items.reduce(
+    (acc, item) => acc + item.quantity * item.price,
+    0,
+  );
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // -------- Bill From --------
+    if (!formData.senderAddress.street.trim())
+      newErrors.streetAddress = "Street address is required";
+    if (!formData.senderAddress.city.trim())
+      newErrors.city = "City is required";
+    if (!formData.senderAddress.postCode.trim())
+      newErrors.postCode = "Post code is required";
+    if (!formData.senderAddress.country.trim())
+      newErrors.country = "Country is required";
+
+    // -------- Bill To --------
+    if (!formData.clientName.trim())
+      newErrors.clientName = "Client name is required";
+
+    if (!formData.clientEmail.trim()) {
+      newErrors.clientEmail = "Client email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.clientEmail)) {
+      newErrors.clientEmail = "Invalid email address";
+    }
+
+    if (!formData.clientAddress.street.trim())
+      newErrors.clientStreetAddress = "Client street address is required";
+
+    if (!formData.clientAddress.city.trim())
+      newErrors.clientCity = "Client city is required";
+    if (!formData.clientAddress.postCode.trim())
+      newErrors.clientPostCode = "Client post code is required";
+    if (!formData.clientAddress.country.trim())
+      newErrors.clientCountry = "Client country is required";
+
+    // -------- Dates --------
+    if (!formData.invoiceDate)
+      newErrors.invoiceDate = "Invoice date is required";
+    if (!formData.paymentTerms)
+      newErrors.paymentTerms = "Payment term is required";
+
+    // -------- Items --------
+    if (formData.items.length === 0) {
+      newErrors.items = "At least one item is required";
+    } else {
+      formData.items.forEach((item, index) => {
+        if (!item.name.trim()) {
+          newErrors[`itemName-${index}`] = "Item name required";
+        }
+        if (!item.quantity || item.quantity <= 0) {
+          newErrors[`itemQuantity-${index}`] = "Qty must be greater than 0";
+        }
+        if (!item.price || item.price <= 0) {
+          newErrors[`itemPrice-${index}`] = "Price must be greater than 0";
+        }
+      });
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
     const newInvoice = {
-      createdAt: invoiceDate,
-      paymentDue: paymentTerm,
-      description: productDescription,
-      paymentTerms: paymentTerm,
-      clientName: clientName,
-      clientEmail: clientEmail,
-      status: saveAsDraft === "true" ? "pending" : "draft",
-      senderAddress: {
-        street: streetAddress,
-        city: city,
-        postCode: postCode,
-        country: country,
-      },
-      clientAddress: {
-        street: clientStreetAddress,
-        city: clientCity,
-        postCode: clientPostCode,
-        country: clientCountry,
-      },
-      items: updatedItems,
-      total: getItemsTotal(),
+      status: "pending",
+      ...formData,
+      total: grandTotal,
     };
+
     createInvoice(newInvoice);
-    setIsCreateOpen(null);
-  }
+    setIsCreateOpen(false);
+  };
 
   function handleCancelCreate(e) {
     e.preventDefault();
@@ -98,18 +178,36 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
 
   function handleSaveAsDraft(e) {
     e.preventDefault();
-    setSaveAsDraft(false);
-    handleSubmit(e);
+
+    if (!validateForm()) return;
+    const newInvoice = {
+      status: "draft",
+      ...formData,
+      total: grandTotal,
+    };
+
+    createInvoice(newInvoice);
     setIsCreateOpen(false);
   }
   return (
-    <div className="flex ">
-      <Sidebar />
-      <div className="flex-10 p-8 h-screen overflow-y-scroll">
+    <div className="flex flex-col md:flex-row h-screen  ">
+      <div className="">
+        <Sidebar />
+        <button
+          onClick={() => {
+            navigate(-1);
+          }}
+          className="flex md:hidden items-center justify-center mt-3 p-2 font-bold gap-2 hover:text-primary-dark transition-all duration-200 cursor-pointer"
+        >
+          <ChevronLeftIcon className="block size-6 text-primary-dark" />
+          <span className="block text-primary-dark">Go Back</span>
+        </button>
+      </div>
+      <div className="flex-10 p-8 h-screen overflow-y-scroll dark:bg-tertiary-light transition duration-300">
         <form>
-          <h2>Create New Form</h2>
+          <h2 className="dark:text-white">Invoice Form</h2>
 
-          <div className="my-5">
+          <div className="my-5 dark:text-white">
             <p>Bill From</p>
 
             <div className="my-2">
@@ -117,118 +215,238 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
                 id="streetAddress"
                 name="streetAddress"
                 label="Street Address"
-                value={streetAddress}
-                onChange={(e) => setStreetAddress(e.target.value)}
+                value={formData.senderAddress.street}
+                onChange={(e) =>
+                  handleAddressChange("senderAddress", "street", e.target.value)
+                }
               />
+              {errors.streetAddress && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.streetAddress}
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col gap-5">
-              <Input
-                name="city"
-                id="city"
-                label="City"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-              />
-              <Input
-                name="postCode"
-                id="postCode"
-                label="Post Code"
-                value={postCode}
-                onChange={(e) => setPostCode(e.target.value)}
-              />
-              <Input
-                name="country"
-                id="country"
-                label="Country"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-              />
+              <div>
+                <Input
+                  name="city"
+                  id="city"
+                  label="City"
+                  value={formData.senderAddress.city}
+                  onChange={(e) =>
+                    handleAddressChange("senderAddress", "city", e.target.value)
+                  }
+                />
+                {errors.city && (
+                  <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  name="postCode"
+                  id="postCode"
+                  label="Post Code"
+                  value={formData.senderAddress.postCode}
+                  onChange={(e) =>
+                    handleAddressChange(
+                      "senderAddress",
+                      "postCode",
+                      e.target.value,
+                    )
+                  }
+                />
+                {errors.postCode && (
+                  <p className="text-red-500 text-sm mt-1">{errors.postCode}</p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  name="country"
+                  id="country"
+                  label="Country"
+                  value={formData.senderAddress.country}
+                  onChange={(e) =>
+                    handleAddressChange(
+                      "senderAddress",
+                      "country",
+                      e.target.value,
+                    )
+                  }
+                />
+                {errors.country && (
+                  <p className="text-red-500 text-sm mt-1">{errors.country}</p>
+                )}
+              </div>
             </div>
           </div>
 
           <div>
-            <p className="my-2">Bill To</p>
+            <p className="my-2 dark:text-white">Bill To</p>
 
-            <div className=" flex flex-col gap-5">
-              <Input
-                name="clientName"
-                id="clientName"
-                label="Client's Name"
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-              />
+            <div className=" flex flex-col gap-5 dark:text-gray-dark">
+              <div>
+                <Input
+                  name="clientName"
+                  id="clientName"
+                  label="Client's Name"
+                  value={formData.clientName}
+                  onChange={(e) => handleChange(e)}
+                />
+                {errors.clientName && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.clientName}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  name="clientEmail"
+                  id="clientEmail"
+                  label="Client's Email"
+                  value={formData.clientEmail}
+                  onChange={(e) => handleChange(e)}
+                />
+                {errors.clientEmail && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.clientEmail}
+                  </p>
+                )}
+              </div>
 
-              <Input
-                name="clientEmail"
-                id="clientEmail"
-                label="Client's Email"
-                value={clientEmail}
-                onChange={(e) => setClientEmail(e.target.value)}
-              />
-
-              <Input
-                name="clientStreetAddress"
-                id="clientStreetAddress"
-                label="Street Address"
-                value={clientStreetAddress}
-                onChange={(e) => setClientStreetAddress(e.target.value)}
-              />
+              <div>
+                <Input
+                  name="clientStreetAddress"
+                  id="clientStreetAddress"
+                  label="Street Address"
+                  value={formData.clientAddress.street}
+                  onChange={(e) =>
+                    handleAddressChange(
+                      "clientAddress",
+                      "street",
+                      e.target.value,
+                    )
+                  }
+                />
+                {errors.clientStreetAddress && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.clientStreetAddress}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="flex gap-5 my-5">
-              <Input
-                name="clientCity"
-                id="clientCity"
-                label="City"
-                value={clientCity}
-                onChange={(e) => setClientCity(e.target.value)}
-              />
-              <Input
-                name="clientPostCode"
-                id="clientPostCode"
-                label="Post Code"
-                value={clientPostCode}
-                onChange={(e) => setClientPostCode(e.target.value)}
-              />
-              <Input
-                name="clientCountry"
-                id="clientCountry"
-                label="Country"
-                value={clientCountry}
-                onChange={(e) => setClientCountry(e.target.value)}
-              />
+              <div>
+                <Input
+                  name="clientCity"
+                  id="clientCity"
+                  label="City"
+                  value={formData.clientAddress.city}
+                  onChange={(e) =>
+                    handleAddressChange("clientAddress", "city", e.target.value)
+                  }
+                />
+                {errors.clientCity && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.clientCity}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  name="clientPostCode"
+                  id="clientPostCode"
+                  label="Post Code"
+                  value={formData.clientAddress.postCode}
+                  onChange={(e) =>
+                    handleAddressChange(
+                      "clientAddress",
+                      "postCode",
+                      e.target.value,
+                    )
+                  }
+                />
+                {errors.clientPostCode && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.clientPostCode}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  name="clientCountry"
+                  id="clientCountry"
+                  label="Country"
+                  value={formData.clientAddress.country}
+                  onChange={(e) =>
+                    handleAddressChange(
+                      "clientAddress",
+                      "country",
+                      e.target.value,
+                    )
+                  }
+                />
+                {errors.clientCountry && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.clientCountry}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="flex gap-5">
-              <DatePicker
-                label="Invoice Date"
-                id="invoiceDate"
-                name="InvoiceDate"
-                value={invoiceDate}
-                onChange={(e) => setInvoiceDate(e.target.value)}
-              />
-
-              <DatePicker
-                label="Payment Terms"
-                id="paymentTerms"
-                name="paymentTerms"
-                value={paymentTerm}
-                onChange={(e) => setPaymentTerm(e.target.value)}
-              />
+              <div>
+                <DatePicker
+                  label="Invoice Date"
+                  id="invoiceDate"
+                  name="invoiceDate"
+                  value={formData.invoiceDate}
+                  onChange={(e) => handleChange(e)}
+                  disabled={true}
+                />
+                {errors.invoiceDate && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.invoiceDate}
+                  </p>
+                )}
+              </div>
+              <div>
+                <DatePicker
+                  label="Payment Terms"
+                  id="paymentTerms"
+                  name="paymentTerms"
+                  value={formData.paymentTerms}
+                  onChange={(e) => handleChange(e)}
+                />
+                {errors.paymentTerms && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.paymentTerms}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="my-4">
-              <Input
-                name="productDescription"
-                id="productDescription"
-                label="Product Description"
-                value={productDescription}
-                onChange={(e) => setProductDescription(e.target.value)}
-              />
+              <div>
+                <Input
+                  name="productDescription"
+                  id="productDescription"
+                  label="Product Description"
+                  value={formData.productDescription}
+                  onChange={(e) => handleChange(e)}
+                />
+                {errors.productDescription && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.productDescription}
+                  </p>
+                )}
+              </div>
             </div>
 
-            <ul className="my-5">
+            <ul className="my-5 dark:text-white">
               <h3 className="my-3">Item List</h3>
               <div className="flex">
                 <p className="flex-2">Item Name</p>
@@ -236,8 +454,8 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
                 <p className="flex-1 flex justify-center">Price</p>
                 <p className="flex-1 flex justify-center">Total</p>
               </div>
-              {items.map((item, i) => (
-                <li key={i} className="flex gap-5 my-3">
+              {formData.items.map((item, i) => (
+                <li key={item.id} className="flex gap-5 my-3">
                   <div className="flex-2">
                     <Input
                       name="name"
@@ -245,9 +463,14 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
                       label=""
                       value={item.name}
                       onChange={(e) =>
-                        handleItemChange(i, "name", e.target.value)
+                        handleItemChange(item.id, "name", e.target.value)
                       }
                     />
+                    {errors[`itemName-${i}`] && (
+                      <p className="text-red-500 text-xs">
+                        {errors[`itemName-${i}`]}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex-1">
@@ -257,9 +480,14 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
                       label=""
                       value={item.quantity}
                       onChange={(e) =>
-                        handleItemChange(i, "quantity", e.target.value)
+                        handleItemChange(item.id, "quantity", e.target.value)
                       }
                     />
+                    {errors[`itemQuantity-${i}`] && (
+                      <p className="text-red-500 text-xs">
+                        {errors[`itemQuantity-${i}`]}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex-1">
@@ -269,14 +497,19 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
                       label=""
                       value={item.price}
                       onChange={(e) =>
-                        handleItemChange(i, "price", e.target.value)
+                        handleItemChange(item.id, "price", e.target.value)
                       }
                     />
+                    {errors[`itemPrice-${i}`] && (
+                      <p className="text-red-500 text-xs">
+                        {errors[`itemPrice-${i}`]}
+                      </p>
+                    )}
                   </div>
 
-                  <div className="flex-1 flex justify-center items-center">
+                  <div className="flex-1 flex justify-center items-center dark:text-gray-dark">
                     <p className="">
-                      {formatCurrency(item.quantity * item.price)}
+                      {formatCurrency(+item.quantity * +item.price)}
                     </p>
                     <button
                       className="w-4 h-4"
@@ -290,20 +523,20 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
 
               <button
                 onClick={(e) => handleAddNewItem(e)}
-                className="my-5 text-center bg-blue-50 transition duration-700 cursor-pointer hover:bg-blue-100 w-full p-4 rounded-b-xl"
+                className="my-5 text-center bg-blue-50 dark:bg-tertiary-dark dark:text-gray-dark hover:dark:bg-tertiary-light transition duration-700 cursor-pointer hover:bg-blue-100 w-full p-4 rounded-b-xl"
               >
                 + Add New Item
               </button>
             </ul>
           </div>
 
-          <div className="flex justify-between items-center gap-4">
+          <div className="flex justify-between items-center gap-1">
             <div>
               <Button onClick={(e) => handleCancelCreate(e)} variant="gray">
                 Discard
               </Button>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-1">
               <Button variant="secondary" onClick={(e) => handleSaveAsDraft(e)}>
                 Save as Draft
               </Button>

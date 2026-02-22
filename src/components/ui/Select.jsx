@@ -15,7 +15,7 @@ const Select = ({
   const stateStyles = error
     ? "border-red-500 focus:border-red-500"
     : value
-      ? "border-gray-dark text-tertiary-dark font-bold focus:border-gray-dark"
+      ? "border-gray-dark text-tertiary-dark font-bold focus:border-gray-dark active:dark:bg-tertiary-dark bg-tertiary-dark"
       : "border-gray-light  text-tertiary-dark focus:border-gray-light";
   return (
     <div className="flex flex-col gap-1">

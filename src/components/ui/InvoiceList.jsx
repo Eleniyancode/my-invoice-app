@@ -27,16 +27,19 @@ function InvoiceList({ invoices }) {
           {invoices.map((inv) => (
             <li
               key={inv.id}
-              className="flex gap-5 p-5 bg-white justify-center items-center"
+              className="flex gap-5 md:p-5 bg-white dark:bg-tertiary-dark transition duration-300 justify-center items-center rounded-lg"
             >
-              <div className="flex text-gray-dark font-sans flex-2 p-5 gap-20 justify-around">
+              <div className="flex flex-col md:flex-row text-gray-dark font-sans md:flex-1 p-5 md:gap-20 gap-3 md:justify-around">
                 <p className="font-bold text-gray-dark">
-                  #<span className="text-tertiary-dark">{inv.id}</span>
+                  #
+                  <span className="text-tertiary-dark dark:text-gray-dark transition duration-300">
+                    {inv.id}
+                  </span>
                 </p>
                 <p>{formatDate(inv.createdAt)}</p>
                 <p>{inv.clientName}</p>
               </div>
-              <div className="flex flex-1 gap-10 p-5 justify-around">
+              <div className="flex flex-col md:flex-row flex-1 gap-2 md:gap-10 p-5 justify-around">
                 <p className="font-bold text-tertiary-dark">
                   {formatCurrency(inv.total)}
                 </p>
@@ -50,9 +53,12 @@ function InvoiceList({ invoices }) {
                 </div>
                 <Link
                   to={`/invoice/${inv.id}`}
-                  className="text-lg font-bold font-sans text-primary-dark cursor-pointer hover:text-primary-dark "
+                  className="font-bold font-sans text-primary-dark cursor-pointer hover:text-white "
                 >
-                  <ChevronRightIcon className="text-primary-dark hover:text-secondary-light transition-all duration-300 size-6" />
+                  <button className="flex cursor-pointer items-center hover:bg-gray-dark px-2 py-3 hover:text-white rounded-lg">
+                    <span className="text-md">View Details</span>
+                    <ChevronRightIcon className="text-primary-dark hover:text-secondary-light transition-all duration-300 size-6" />
+                  </button>
                 </Link>
               </div>
             </li>

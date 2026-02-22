@@ -7,7 +7,7 @@ function DeleteInvoiceForm({
 }) {
   const navigate = useNavigate();
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 p-5 flex items-center justify-center">
       {/* 🔥 Overlay */}
       <div
         onClick={() => setDeletingInvoice(null)}
