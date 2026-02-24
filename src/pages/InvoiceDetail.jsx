@@ -13,7 +13,7 @@ import { capitalizeFirstLetter } from "../utils/capitalizeFirstLetter";
 import { formatDate } from "../utils/formatDate";
 import { formatCurrency } from "../utils/formatCurrency";
 import EditInvoiceForm from "../components/ui/EditInvoiceForm";
-import Modal from "../components/ui/modal";
+import Modal from "../components/ui/Modal";
 import DeleteInvoiceForm from "../components/ui/DeleteInvoiceForm";
 
 function InvoiceDetail() {
