@@ -52,9 +52,10 @@ React (Vite) | Tailwind CSS | Firebase Auth & Firestore | React Router | React T
 
 ## 🎯 Installation & Local Setup
 
-# Clone the repo:
+## Clone the repo:
 
 ```bash
 git clone https://github.com/Eleniyancode/my-invoice-app.git
 
+---
 ```
