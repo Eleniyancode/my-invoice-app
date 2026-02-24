@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { AppContext } from "./AppContext";
 import { getUserInvoices } from "../auth/services/invoiceServices/getUserInvoices";
 import { addInvoice } from "../auth/services/invoiceServices/addInvoice";
@@ -11,17 +11,6 @@ export const AppProvider = ({ children }) => {
   const { user } = useAuth();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   fetch("../data.json")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setInvoices(data);
-  //       // console.log(data);
-  //       localStorage.setItem("data", JSON.stringify(data));
-  //     })
-  //     .catch((err) => console.error(err));
-  // }, []);
 
   const loadInvoices = async () => {
     if (!user) return;

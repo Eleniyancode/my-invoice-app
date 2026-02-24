@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { auth } from "../auth/services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { AuthContext } from "./authContext";
+import { AuthContext } from "./AuthContext.jsx";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
