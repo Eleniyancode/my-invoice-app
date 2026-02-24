@@ -4,7 +4,7 @@ import Sidebar from "../components/layout/Sidebar";
 import InvoiceList from "../components/ui/InvoiceList";
 import { useAppContext } from "../context/useAppContext";
 import Main from "../components/layout/Main";
-import Modal from "../components/ui/modal";
+import Modal from "../components/ui/Modal";
 import CreateInvoiceForm from "../components/ui/CreateInvoiceForm";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
