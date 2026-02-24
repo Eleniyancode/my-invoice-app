@@ -6,7 +6,7 @@ import Main from "../components/layout/Main";
 import Spinner from "../components/ui/Spinner";
 import { toast } from "react-toastify";
 
-export default function Login() {
+export default function LogIn() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({

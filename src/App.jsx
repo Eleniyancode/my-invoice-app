@@ -3,7 +3,7 @@ import Signup from "./auth/SignUp";
 import Dashboard from "./pages/Dashboard";
 import InvoiceDetail from "./pages/InvoiceDetail";
 import ProtectedRoute from "./ProtectedRoute";
-import Login from "./auth/LogIn.jsx";
+import LogIn from "./auth/LogIn.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,7 +15,7 @@ function App() {
           <Route path="/" element={<Signup />} />
 
           <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LogIn />} />
 
           <Route
             path="/dashboard"
