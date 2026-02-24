@@ -1,16 +1,114 @@
-# React + Vite
+# 🧾 My Invoice App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A **responsive, production-ready invoice management app** built with **React**, **Firebase**, and **Tailwind CSS**.  
+Users can **create, edit, delete invoices**, with secure **authentication**, **real-time updates**, **invoice filtering**, and a **theme toggle** for light/dark mode.
 
-Currently, two official plugins are available:
+🔗 Live Demo: [Invoice App](https://my-invoice-app-vr6i.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ⚡ Key Highlights
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🔐 **Authentication & Protected Routes** (Signup/Login)
+- 🧾 **Full CRUD** for invoices
+- 🔎 **Invoice Filtering**: Filter invoices by status (Paid, Pending, Draft)
+- 🎨 **Theme Toggle**: Switch between light and dark mode
+- 📦 **Realtime Data** with Firebase Firestore
+- 🔔 **Interactive UX**: Toast notifications & modals
+- 📱 **Responsive Design** (mobile & desktop)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📸 Screenshots
+
+**Dashboard View**  
+![Dashboard](public/screenshots/invoice%20dashboard%20page%20pic.png)
+
+**Invoice Details View**
+![Invoice Details](public/screenshots//invoice%20detail%20page%20pic.png)
+
+**Login / Signup**  
+![Login](public/screenshots//invoice%20login%20page%20pic.png)
+
+---
+
+## 🛠 Tech Stack
+
+React (Vite) | Tailwind CSS | Firebase Auth & Firestore | React Router | React Toastify | Vercel
+
+---
+
+## 📂 Project Structure
+
+src/
+components/ # Reusable UI components
+context/ # Global state (Auth, Toast)
+pages/ # App pages (Dashboard, Login, Signup)
+services/ # Firebase CRUD logic
+App.jsx
+main.jsx
+
+---
+
+## 🎯 Installation & Local Setup
+
+1. Clone the repo:
+
+````bash
+git clone https://github.com/Eleniyancode/my-invoice-app.git
+
+---
+
+##  Install Dependencies
+
+```bash
+npm install
+
+---
+
+---
+
+##  Create a .env file with Firebase config
+
+```bash
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+
+---
+
+---
+
+##  Build for production
+
+```bash
+npm run build
+
+---
+
+## 💡 Why I Built This
+
+- To showcase **real-world React + Firebase skills**
+- To implement **secure authentication & CRUD flows**
+- To provide **enhanced UX features** like **filtering** and **theme toggle**
+- To create a **polished, production-ready app** for portfolio & clients
+
+---
+
+## 🚀 Next Improvements
+
+- Download invoices as **PDF**
+- Dashboard analytics
+- Further **UI enhancements**
+
+---
+
+## 👨‍💻 Author
+
+Abdulrahaman Ridwan — Frontend Developer | Passionate about **building real apps**
+
+- [GitHub](https://github.com/Eleniyancode)
+````
