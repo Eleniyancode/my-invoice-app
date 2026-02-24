@@ -60,3 +60,55 @@ git clone https://github.com/Eleniyancode/my-invoice-app.git
 ```
 
 ---
+
+## Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+## Create a .env file with Firebase config
+
+```bash
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+```
+
+---
+
+## Build for production
+
+```bash
+npm run build
+```
+
+---
+
+## 💡 Why I Built This
+
+- To showcase **real-world React + Firebase skills**
+- To implement **secure authentication & CRUD flows**
+- To provide **enhanced UX features** like **filtering** and **theme toggle**
+- To create a **polished, production-ready app** for portfolio & clients
+
+---
+
+## 🚀 Next Improvements
+
+- Download invoices as **PDF**
+- Dashboard analytics
+- Further **UI enhancements**
+
+---
+
+## 👨‍💻 Author
+
+Abdulrahaman Ridwan — Frontend Developer | Passionate about **building real apps**
+
+- [GitHub](https://github.com/Eleniyancode)
