@@ -4,7 +4,6 @@ import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 
-formatCurrency;
 function InvoiceList({ invoices }) {
   return (
     <>

@@ -193,7 +193,7 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
     setIsCreateOpen(false);
   }
 
-  function handleSaveAsDraft(e) {
+  async function handleSaveAsDraft(e) {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -203,13 +203,17 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
       total: grandTotal,
     };
 
-    setLoadingSaveAsDraft(true);
-    createInvoice(newInvoice);
-    setIsCreateOpen(false);
-    setLoadingSaveAsDraft(false);
-    toast.success("Invoice created successfully", {
-      toastId: "createInvoice",
-    });
+    try {
+      setLoadingSaveAsDraft(true);
+      createInvoice(newInvoice);
+      setIsCreateOpen(false);
+      setLoadingSaveAsDraft(false);
+      toast.success("Invoice created successfully", {
+        toastId: "createInvoice",
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
   return (
     <div className="flex flex-col md:flex-row h-screen  ">

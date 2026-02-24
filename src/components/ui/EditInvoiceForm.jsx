@@ -59,7 +59,7 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
   function handleDeleteItem(e, id) {
     e.preventDefault();
     if (items.length <= 1) return;
-    setItems((prev) => prev.filter((inv, i) => i !== id));
+    setItems((prev) => prev.filter((inv) => inv.id !== id));
   }
 
   function handleAddNewItem(e) {
@@ -311,7 +311,7 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
                     </p>
                     <button
                       className="w-4 h-4"
-                      onClick={(e) => handleDeleteItem(e, i)}
+                      onClick={(e) => handleDeleteItem(e, item.id)}
                     >
                       <TrashIcon className="text-gray-dark transition duration-300 hover:text-red-800 cursor-pointer size-6" />
                     </button>
