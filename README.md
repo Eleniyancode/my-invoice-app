@@ -57,7 +57,6 @@ React (Vite) | Tailwind CSS | Firebase Auth & Firestore | React Router | React T
 ```bash
 git clone https://github.com/Eleniyancode/my-invoice-app.git
 
-
 ---
 
 ```
