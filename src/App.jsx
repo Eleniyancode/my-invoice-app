@@ -3,7 +3,7 @@ import Signup from "./auth/SignUp";
 import Dashboard from "./pages/Dashboard";
 import InvoiceDetail from "./pages/InvoiceDetail";
 import ProtectedRoute from "./ProtectedRoute";
-import Login from "./auth/Login";
+import Login from "./auth/LogIn.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
