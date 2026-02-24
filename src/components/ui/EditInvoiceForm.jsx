@@ -6,6 +6,8 @@ import Button from "./Button";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { useNavigate } from "react-router-dom";
+import Spinner from "./Spinner";
+import { toast } from "react-toastify";
 
 function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
   const [streetAddress, setStreetAddress] = useState(
@@ -27,12 +29,14 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
     invoice.clientAddress.country,
   );
   const [invoiceDate, setInvoiceDate] = useState(invoice.createdAt);
-  const [paymentTerm, setPaymentTerm] = useState(invoice.paymentDue);
+  const [paymentTerm, setPaymentTerm] = useState(invoice.paymentTerms);
   const [productDescription, setProductDescription] = useState(
     invoice.description,
   );
   const [items, setItems] = useState(invoice.items);
   const [total, setTotal] = useState(invoice.total);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -101,8 +105,16 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
       total: getItemsTotal(),
     };
 
-    await updateInvoice(invoice.id, updatedData);
-    setEditingInvoice(null);
+    try {
+      setLoading(true);
+      await updateInvoice(invoice.id, updatedData);
+      setEditingInvoice(null);
+      setLoading(false);
+      toast.info("Invoice updated successfully ✏️");
+    } catch (err) {
+      console.error(err.message);
+      setError(err.message);
+    }
   };
 
   function handleCancelEditing(e) {
@@ -127,7 +139,7 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
       <div className="flex-10 p-8 h-screen overflow-y-scroll">
         <form>
           <h2>Edit #{invoice.id}</h2>
-
+          {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           <div className="my-5">
             <p>Bill Form</p>
 
@@ -321,7 +333,7 @@ function EditInvoiceForm({ invoice, updateInvoice, setEditingInvoice }) {
               Cancel
             </Button>
             <Button onClick={(e) => handleSubmit(e)} variant="primary">
-              Save Changes
+              {loading ? <Spinner /> : <span>Save Changes</span>}
             </Button>
           </div>
         </form>

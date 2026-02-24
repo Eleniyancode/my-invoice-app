@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeftIcon } from "@heroicons/react/16/solid";
 import { logout } from "../auth/services/auth";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 function Dashboard() {
   const { invoices, createInvoice, setInvoices, loading } = useAppContext();
   const [filterBy, setFilterBy] = useState("all");
@@ -27,7 +28,7 @@ function Dashboard() {
     navigate("/login");
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <>
@@ -38,13 +39,26 @@ function Dashboard() {
             onClick={() => {
               navigate(-1);
             }}
-            className="flex md:hidden items-center justify-center mt-3 p-2 font-bold gap-2 hover:text-primary-dark transition-all duration-200 cursor-pointer"
+            className="hidden items-center justify-center mt-3 p-2 font-bold gap-2 hover:text-primary-dark transition-all duration-200 cursor-pointer"
           >
             <ChevronLeftIcon className="block size-6 text-primary-dark" />
             <span className="block text-primary-dark">Go Back</span>
           </button>
         </div>
+
         <Main>
+          <div>
+            <button
+              onClick={() => {
+                handleLogout();
+              }}
+              className="flex items-center justify-center mt-3 p-2 font-bold gap-2 hover:text-primary-dark transition-all duration-200 cursor-pointer"
+            >
+              <ChevronLeftIcon className="block size-6 text-primary-dark" />
+              <span className="block text-primary-dark">Log Out</span>
+            </button>
+          </div>
+
           <header className="flex md:p-5 mb-3 justify-between gap-3">
             <div>
               <h1 className="font-sans font-bold md:text-xl text-lg dark:text-white">

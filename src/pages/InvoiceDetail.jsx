@@ -28,6 +28,7 @@ function InvoiceDetail() {
 
   // Convert id to number if your ids are numbers
   const invoice = invoices.find((inv) => inv.id === id);
+  // const paymentDueDate = new Date(invoice.paymentTerms);
 
   const handleMarkAsPaid = (id) => {
     setInvoices((prev) =>
@@ -121,7 +122,7 @@ function InvoiceDetail() {
                 <p className="font-bold text-gray-dark">
                   #
                   <span className="text-tertiary-dark dark:text-white">
-                    {invoice.id}
+                    {invoice.invoiceId}
                   </span>
                 </p>
                 <p className="text-gray-dark ">{invoice.description}</p>
@@ -149,7 +150,7 @@ function InvoiceDetail() {
                   <div>
                     <p className="text-gray-dark">Payment Date</p>
                     <p className="text-tertiary-dark font-bold font-sans dark:text-white">
-                      {formatDate(invoice.paymentDue)}
+                      {invoice.paymentTerms}
                     </p>
                   </div>
                 </div>

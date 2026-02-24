@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function DeleteInvoiceForm({
   deleteInvoice,
@@ -33,6 +34,7 @@ function DeleteInvoiceForm({
                 deleteInvoice(deletingInvoice.id);
                 setDeletingInvoice(null);
                 navigate(-1);
+                toast.warning("Invoice deleted successfully 🗑️");
               }}
               className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-400 transition duration-500 cursor-pointer"
             >

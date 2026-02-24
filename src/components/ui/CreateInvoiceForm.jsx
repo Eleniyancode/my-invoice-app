@@ -5,10 +5,13 @@ import Input from "./Input";
 import Button from "./Button";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { formatCurrency } from "../../utils/formatCurrency";
-import { formatDate } from "../../utils/formatDate";
 import { useNavigate } from "react-router-dom";
+import Spinner from "./Spinner";
+import { formatDate } from "../../utils/formatDate";
+import { toast } from "react-toastify";
 
 function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
+  const today = new Date();
   const [formData, setFormData] = useState({
     senderAddress: {
       street: "14 Bodija Avenue",
@@ -24,13 +27,15 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
       postCode: "",
       country: "",
     },
-    invoiceDate: formatDate(new Date()),
+    invoiceDate: formatDate(today),
     paymentTerms: "",
     productDescription: "",
     items: [{ id: crypto.randomUUID(), name: "", quantity: 0, price: 0 }],
   });
 
   const [errors, setErrors] = useState({});
+  const [loadingSaveAndSend, setLoadingSaveAndSend] = useState(false);
+  const [loadingSaveAsDraft, setLoadingSaveAsDraft] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -168,12 +173,19 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
     };
 
     try {
+      setLoadingSaveAndSend(true);
       await createInvoice(newInvoice);
+      toast.success("Invoice created successfully", {
+        toastId: "createInvoice",
+      });
       navigate("/dashboard"); // go back after saving
     } catch (error) {
       console.error("Error saving invoice:", error);
+      toast.error(error.message || "Something went wrong");
+    } finally {
+      setLoadingSaveAndSend(false);
+      setIsCreateOpen(false);
     }
-    setIsCreateOpen(false);
   };
 
   function handleCancelCreate(e) {
@@ -191,8 +203,13 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
       total: grandTotal,
     };
 
+    setLoadingSaveAsDraft(true);
     createInvoice(newInvoice);
     setIsCreateOpen(false);
+    setLoadingSaveAsDraft(false);
+    toast.success("Invoice created successfully", {
+      toastId: "createInvoice",
+    });
   }
   return (
     <div className="flex flex-col md:flex-row h-screen  ">
@@ -543,10 +560,10 @@ function CreateInvoiceForm({ createInvoice, setIsCreateOpen }) {
             </div>
             <div className="flex gap-1">
               <Button variant="secondary" onClick={(e) => handleSaveAsDraft(e)}>
-                Save as Draft
+                {loadingSaveAsDraft ? <Spinner /> : <span>Save as Draft</span>}
               </Button>
               <Button onClick={(e) => handleSubmit(e)} variant="primary">
-                Save and Send
+                {loadingSaveAndSend ? <Spinner /> : <span>Save and Send</span>}
               </Button>
             </div>
           </div>

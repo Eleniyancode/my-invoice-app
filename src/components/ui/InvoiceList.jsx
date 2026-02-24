@@ -13,7 +13,7 @@ function InvoiceList({ invoices }) {
           <img src="../illustration-empty.svg" alt="empty-illustration-image" />
 
           <div className="flex flex-col items-center justify-center gap-2">
-            <h1 className="font-bold font-sans text-lg">
+            <h1 className="font-bold font-sans dark:text-gray-light text-lg">
               There is nothing here
             </h1>
             <p className="text-gray-dark text-center">

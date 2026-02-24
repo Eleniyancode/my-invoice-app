@@ -7,5 +7,8 @@ export const updateInvoice = async (id, updatedData) => {
 
   const invoiceRef = doc(db, "invoices", id);
 
-  await updateDoc(invoiceRef, updatedData);
+  await updateDoc(invoiceRef, {
+    ...updatedData,
+    userId: user.uid, // ensure ownership
+  });
 };
